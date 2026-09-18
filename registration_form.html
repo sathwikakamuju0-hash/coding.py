@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>registration form</title>
+        <style>
+            body{
+                 background-color: cadetblue;
+        font-family: Arial;
+    }
+
+    h1 {
+        text-align: center;
+        color: white;
+    }
+
+    form {
+        width: 350px;
+        margin: auto;
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    input {
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid gray;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 10px 25px;
+        background-color: blue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover{
+        background-color: darkblue     
+    
+    }
+    #message{
+        font-weight: bold;
+    }
+</style>
+
+</head>
+
+<body>
+
+<h1>Registration Form</h1>
+
+<form>
+
+    <label>FullName:</label>
+    <input type="text" id="FullName">
+
+    <br><br>
+
+    <label>Email:</label>
+    <input type="text" id="Email">
+
+    <br><br>
+
+    <label>Password:</label>
+    <input type="password" id="password">
+
+    <br><br>
+
+    <label>Phone:</label>
+    <input type="tel" id="phone">
+
+    <br><br>
+
+    <p>Gender</p>
+
+    <label>Male:</label>
+    <input type="radio" name="gender" id="male">
+
+    <br><br>
+
+    <label>Female:</label>
+    <input type="radio" name="gender" id="female">
+
+    <br><br>
+
+    <button type="button" id="submit">Submit</button>
+
+    <p id="message"></p>
+
+</form>
+
+
+<script>
+
+    let FullName = document.getElementById("FullName");
+    let Email = document.getElementById("Email");
+    let password = document.getElementById("password");
+    let phone = document.getElementById("phone");
+    let male = document.getElementById("male");
+    let female = document.getElementById("female");
+    let submit = document.getElementById("submit");
+    let message = document.getElementById("message");
+
+
+    submit.addEventListener("click", function() {
+
+        if (FullName.value == "" ||
+            Email.value == "" ||
+            password.value == "" ||
+            phone.value == "") {
+
+            message.innerHTML = "Please fill all the details";
+            message.style.color = "red";
+
+        }
+
+        else if (!male.checked && !female.checked) {
+
+            message.innerHTML = "Please select gender";
+            message.style.color = "red";
+
+        }
+        else{
+            message.innerHTML = "Registration successfull"
+            message.style.color = "greeen"
+
+            localStorage.setItem("FullName",FullName.value);
+            localStorage.setItem("Email",Email.value);
+            localStorage.setItem("phone",phone.value);
+             
+             
+        }
+    }); 
+
+</script>
+
+</body>
+
+</html>
+
+            
+        </style>
+    </head>
+</html>
