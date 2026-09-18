@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>To-Do List</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background-color: #f3e4d0;
+            color: #4b2e1f;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background-color: #fff8ed;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(75, 46, 31, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4b2e1f;
+            margin-bottom: 25px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input,
+        select {
+            padding: 11px;
+            border: 2px solid #8b5e3c;
+            border-radius: 7px;
+            background-color: white;
+            color: #4b2e1f;
+            font-size: 15px;
+        }
+
+        #task_input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 7px;
+            background-color: #6f452d;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4b2e1f;
+        }
+
+        #cancel_button {
+            background-color: #a67c52;
+            display: none;
+        }
+
+        #cancel_button:hover {
+            background-color: #7d5a3b;
+        }
+
+        #clear_button {
+            background-color: #8b3a2f;
+        }
+
+        #clear_button:hover {
+            background-color: #682a22;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #search_input {
+            flex: 1;
+        }
+
+        #counter {
+            background-color: #ead3b7;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            color: #4b2e1f;
+        }
+
+        ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 12px 0;
+            padding: 15px;
+            background-color: #f8ead8;
+            border: 1px solid #c9a47c;
+            border-radius: 8px;
+        }
+
+        li span {
+            margin-right: 8px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .high {
+            color: #9b2c2c;
+            font-weight: bold;
+        }
+
+        .medium {
+            color: #b06b00;
+            font-weight: bold;
+        }
+
+        .low {
+            color: #4f6f32;
+            font-weight: bold;
+        }
+
+        li button {
+            margin-left: 6px;
+            padding: 7px 10px;
+        }
+
+        @media (max-width: 650px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .input-section,
+            .search-section {
+                flex-direction: column;
+            }
+
+            input,
+            select,
+            button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>☕ TO-DO LIST</h1>
+
+
+        <div class="input-section">
+
+            <input
+                type="text"
+                id="task_input"
+                placeholder="Enter task"
+            >
+
+            <input
+                type="date"
+                id="taskdate"
+            >
+
+            <select id="priority">
+
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+
+            </select>
+
+
+            <button id="add_button">
+                Add Task
+            </button>
+
+
+            <button id="cancel_button">
+                Cancel
+            </button>
+
+
+            <button id="clear_button">
+                Clear All
+            </button>
+
+        </div>
+
+
+        <div class="search-section">
+
+            <input
+                type="text"
+                id="search_input"
+                placeholder="🔍 Search task"
+            >
+
+
+            <select id="filter">
+
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+
+            </select>
+
+        </div>
+
+
+        <h3 id="counter">
+            Total: 0 | Completed: 0 | Pending: 0
+        </h3>
+
+
+        <ol id="task_list"></ol>
+
+    </div>
+
+
+    <script>
+
+        let task_input =
+            document.getElementById("task_input");
+
+        let task_date =
+            document.getElementById("taskdate");
+
+        let priority =
+            document.getElementById("priority");
+
+        let add_button =
+            document.getElementById("add_button");
+
+        let cancel_button =
+            document.getElementById("cancel_button");
+
+        let clear_button =
+            document.getElementById("clear_button");
+
+        let search_input =
+            document.getElementById("search_input");
+
+        let filter =
+            document.getElementById("filter");
+
+        let task_list =
+            document.getElementById("task_list");
+
+        let counter =
+            document.getElementById("counter");
+
+
+        let tasks = [];
+
+        let edit_index = -1;
+
+
+        // ADD OR UPDATE TASK
+
+        add_button.addEventListener(
+            "click",
+            function () {
+
+                let task =
+                    task_input.value.trim();
+
+
+                if (task === "") {
+
+                    alert("Please enter a task!");
+
+                    return;
+                }
+
+
+                // UPDATE TASK
+
+                if (edit_index !== -1) {
+
+                    tasks[edit_index].name =
+                        task;
+
+                    tasks[edit_index].date =
+                        task_date.value;
+
+                    tasks[edit_index].priority =
+                        priority.value;
+
+
+                    edit_index = -1;
+
+
+                    add_button.textContent =
+                        "Add Task";
+
+                    cancel_button.style.display =
+                        "none";
+
+                }
+
+
+                // ADD NEW TASK
+
+                else {
+
+                    let new_task = {
+
+                        name: task,
+
+                        date: task_date.value,
+
+                        priority: priority.value,
+
+                        completed: false
+
+                    };
+
+
+                    tasks.push(new_task);
+
+                }
+
+
+                task_input.value = "";
+
+                task_date.value = "";
+
+                priority.value = "High";
+
+
+                display_tasks();
+
+            }
+        );
+
+
+        // DISPLAY TASKS
+
+        function display_tasks() {
+
+            task_list.innerHTML = "";
+
+
+            let search_text =
+                search_input.value.toLowerCase();
+
+
+            let selected_filter =
+                filter.value;
+
+
+            tasks.forEach(
+                function (task, index) {
+
+
+                    // SEARCH
+
+                    if (
+                        !task.name
+                            .toLowerCase()
+                            .includes(search_text)
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    // PENDING FILTER
+
+                    if (
+                        selected_filter === "pending"
+                        &&
+                        task.completed === true
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    // COMPLETED FILTER
+
+                    if (
+                        selected_filter === "completed"
+                        &&
+                        task.completed === false
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    // CREATE LIST ITEM
+
+                    let li =
+                        document.createElement("li");
+
+
+                    // TASK NAME
+
+                    let span =
+                        document.createElement("span");
+
+
+                    span.textContent =
+                        task.name + " ";
+
+
+                    if (task.completed) {
+
+                        span.classList.add(
+                            "completed"
+                        );
+
+                    }
+
+
+                    // PRIORITY
+
+                    let priority_text =
+                        document.createElement("span");
+
+
+                    priority_text.textContent =
+                        "[" + task.priority + "] ";
+
+
+                    priority_text.classList.add(
+                        task.priority.toLowerCase()
+                    );
+
+
+                    // DATE
+
+                    let date_text =
+                        document.createElement("span");
+
+
+                    if (task.date !== "") {
+
+                        date_text.textContent =
+                            " 📅 " + task.date;
+
+                    }
+
+
+                    // COMPLETE BUTTON
+
+                    let complete_button =
+                        document.createElement("button");
+
+
+                    if (task.completed) {
+
+                        complete_button.textContent =
+                            "Undo";
+
+                    }
+
+                    else {
+
+                        complete_button.textContent =
+                            "Complete";
+
+                    }
+
+
+                    complete_button.addEventListener(
+                        "click",
+                        function () {
+
+                            task.completed =
+                                !task.completed;
+
+
+                            display_tasks();
+
+                        }
+                    );
+
+
+                    // EDIT BUTTON
+
+                    let edit_button =
+                        document.createElement("button");
+
+
+                    edit_button.textContent =
+                        "Edit";
+
+
+                    edit_button.addEventListener(
+                        "click",
+                        function () {
+
+                            task_input.value =
+                                task.name;
+
+
+                            task_date.value =
+                                task.date;
+
+
+                            priority.value =
+                                task.priority;
+
+
+                            edit_index =
+                                index;
+
+
+                            add_button.textContent =
+                                "Update Task";
+
+
+                            cancel_button.style.display =
+                                "inline-block";
+
+
+                            task_input.focus();
+
+                        }
+                    );
+
+
+                    // DELETE BUTTON
+
+                    let delete_button =
+                        document.createElement("button");
+
+
+                    delete_button.textContent =
+                        "Delete";
+
+
+                    delete_button.addEventListener(
+                        "click",
+                        function () {
+
+                            tasks.splice(index, 1);
+
+
+                            display_tasks();
+
+                        }
+                    );
+
+
+                    // ADD ELEMENTS
+
+                    li.appendChild(span);
+
+                    li.appendChild(priority_text);
+
+                    li.appendChild(date_text);
+
+                    li.appendChild(
+                        complete_button
+                    );
+
+                    li.appendChild(
+                        edit_button
+                    );
+
+                    li.appendChild(
+                        delete_button
+                    );
+
+
+                    task_list.appendChild(li);
+
+                }
+            );
+
+
+            update_counter();
+
+        }
+
+
+        // COUNTER
+
+        function update_counter() {
+
+            let total =
+                tasks.length;
+
+
+            let completed =
+                tasks.filter(
+                    function (task) {
+
+                        return task.completed === true;
+
+                    }
+                ).length;
+
+
+            let pending =
+                total - completed;
+
+
+            counter.textContent =
+                "Total: " + total +
+                " | Completed: " + completed +
+                " | Pending: " + pending;
+
+        }
+
+
+        // CLEAR ALL
+
+        clear_button.addEventListener(
+            "click",
+            function () {
+
+                if (tasks.length === 0) {
+
+                    alert("No tasks to clear!");
+
+                    return;
+
+                }
+
+
+                if (
+                    confirm(
+                        "Are you sure you want to clear all tasks?"
+                    )
+                ) {
+
+                    tasks = [];
+
+                    display_tasks();
+
+                }
+
+            }
+        );
+
+
+        // CANCEL EDIT
+
+        cancel_button.addEventListener(
+            "click",
+            function () {
+
+                task_input.value = "";
+
+                task_date.value = "";
+
+                priority.value = "High";
+
+
+                edit_index = -1;
+
+
+                add_button.textContent =
+                    "Add Task";
+
+
+                cancel_button.style.display =
+                    "none";
+
+            }
+        );
+
+
+        // SEARCH
+
+        search_input.addEventListener(
+            "input",
+            function () {
+
+                display_tasks();
+
+            }
+        );
+
+
+        // FILTER
+
+        filter.addEventListener(
+            "change",
+            function () {
+
+                display_tasks();
+
+            }
+        );
+
+
+        // ENTER KEY
+
+        task_input.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Enter") {
+
+                    add_button.click();
+
+                }
+
+            }
+        );
+
+
+        // INITIAL DISPLAY
+
+        display_tasks();
+
+    </script>
+
+</body>
+
+</html>
