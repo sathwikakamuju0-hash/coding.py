@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Student Management System</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background-color: #0b1f3a;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .box {
+            width: 700px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0b1f3a;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 25px;
+            background-color: #0b1f3a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1c4e80;
+        }
+
+        .student {
+            background-color: #eaf2f8;
+            border: 2px solid #0b1f3a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .student h2 {
+            color: #0b1f3a;
+        }
+
+        .student p {
+            color: black;
+            font-size: 16px;
+        }
+
+        .summary {
+            background-color: #d6eaf8;
+            border: 2px solid #0b1f3a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary h2 {
+            color: #0b1f3a;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="box">
+
+    <h1>STUDENT MANAGEMENT SYSTEM</h1>
+
+    <button onclick="calculateResult()">
+        Start Student Calculator
+    </button>
+
+    <div id="output"></div>
+
+</div>
+
+
+<script>
+
+function calculateResult() {
+
+    let numberOfStudents =
+        Number(prompt("Enter number of students:"));
+
+    let passedStudents = 0;
+
+    let failedStudents = 0;
+
+    let output =
+        document.getElementById("output");
+
+    output.innerHTML = "";
+
+
+    for (
+        let i = 1;
+        i <= numberOfStudents;
+        i++
+    ) {
+
+        let name =
+            prompt("Enter student name:");
+
+        let english =
+            Number(prompt("Enter English marks:"));
+
+        let maths =
+            Number(prompt("Enter Maths marks:"));
+
+        let hindi =
+            Number(prompt("Enter Hindi marks:"));
+
+        let telugu =
+            Number(prompt("Enter Telugu marks:"));
+
+        let science =
+            Number(prompt("Enter Science marks:"));
+
+
+        let total =
+            english +
+            maths +
+            hindi +
+            telugu +
+            science;
+
+
+        let average =
+            total / 5;
+
+
+        let percentage =
+            (total / 500) * 100;
+
+
+        let result;
+
+        let grade;
+
+
+        if (
+            english >= 35 &&
+            maths >= 35 &&
+            hindi >= 35 &&
+            telugu >= 35 &&
+            science >= 35
+        ) {
+
+            result = "PASS";
+
+            passedStudents++;
+
+        } else {
+
+            result = "FAIL";
+
+            failedStudents++;
+
+        }
+
+
+        if (result == "FAIL") {
+
+            grade = "F";
+
+        }
+        else if (percentage >= 90) {
+
+            grade = "A+";
+
+        }
+        else if (percentage >= 80) {
+
+            grade = "A";
+
+        }
+        else if (percentage >= 70) {
+
+            grade = "B";
+
+        }
+        else if (percentage >= 60) {
+
+            grade = "B+";
+
+        }
+        else {
+
+            grade = "C";
+
+        }
+
+
+        output.innerHTML +=
+
+        "<div class='student'>" +
+
+        "<h2>Student " + i + ": " + name + "</h2>" +
+
+        "<p><b>English Marks:</b> " +
+        english + "</p>" +
+
+        "<p><b>Maths Marks:</b> " +
+        maths + "</p>" +
+
+        "<p><b>Hindi Marks:</b> " +
+        hindi + "</p>" +
+
+        "<p><b>Telugu Marks:</b> " +
+        telugu + "</p>" +
+
+        "<p><b>Science Marks:</b> " +
+        science + "</p>" +
+
+        "<p><b>Total Marks:</b> " +
+        total + " / 500</p>" +
+
+        "<p><b>Average:</b> " +
+        average + "</p>" +
+
+        "<p><b>Percentage:</b> " +
+        percentage + "%</p>" +
+
+        "<p><b>Result:</b> " +
+        result + "</p>" +
+
+        "<p><b>Grade:</b> " +
+        grade + "</p>" +
+
+        "</div>";
+
+    }
+
+
+    output.innerHTML +=
+
+    "<div class='summary'>" +
+
+    "<h2>Overall Summary</h2>" +
+
+    "<p><b>Total Students:</b> " +
+    numberOfStudents + "</p>" +
+
+    "<p><b>Passed Students:</b> " +
+    passedStudents + "</p>" +
+
+    "<p><b>Failed Students:</b> " +
+    failedStudents + "</p>" +
+
+    "</div>";
+
+}
+
+</script>
+
+</body>
+
+</html>
